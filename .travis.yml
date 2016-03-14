@@ -11,27 +11,27 @@ branches:
 cache:
   directories:
   - $HOME/.m2
-
 before_install:
-- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "Not a PR Build" && [ "IS_${TRAVIS_TAG}" != "IS_" ] && echo "Is tag build $TRAVIS_TAG" || echo "."'
-- '[ "IS_${TRAVIS_TAG}" != "IS_" ] && mvn versions:set -DnewVersion=$TRAVIS_TAG || true'
-
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "Not a PR Build" && [ "IS_${TRAVIS_TAG}"
+  != "IS_" ] && echo "Is tag build $TRAVIS_TAG" || echo "."'
+- '[ "IS_${TRAVIS_TAG}" != "IS_" ] && mvn versions:set -DnewVersion=$TRAVIS_TAG ||
+  true'
 install:
-- 'mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V'
-
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
-- test "$TRAVIS_PULL_REQUEST" == "false" && git clone -b travis `git config --get remote.origin.url` target/travis || true
-
+- test "$TRAVIS_PULL_REQUEST" == "false" && git clone -b travis `git config --get
+  remote.origin.url` target/travis || true
 script:
-- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "Deploying..." && mvn deploy --settings target/travis/settings.xml || echo "Testing..." && mvn test -B'
-
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && echo "Deploying..." && mvn deploy --settings
+  target/travis/settings.xml || echo "Testing..." && mvn test -B'
 after_success:
-- '[ "$TRAVIS_TAG" != "" ] && mvn site-deploy -P github-site -Dgithub.global.oauth2Token=$GITHUB_TOKEN || true'
-- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "$TRAVIS_TAG" = "" ] && mvn scoverage:report coveralls:report || true'
-
+- '[ "$TRAVIS_TAG" != "" ] && mvn site-deploy -P github-site -Dgithub.global.oauth2Token=$GITHUB_TOKEN
+  || true'
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "$TRAVIS_TAG" = "" ] && mvn scoverage:report
+  coveralls:report || true'
 env:
   global:
   - MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
-  - secure: "gOADOsC+cXcYQVjSAtSP3hNPM/Kw1kqcf/LvxxpyDPrE+GtQbgWjwmD6M63qNx5WHiIvxJQRREsGWTcyiJ/30yAciRC9MRixwNRJCypg6B6W8yCb6gaxN+jze/7d7Sp9H/EyWcHF1784W6SLTjzotSZfScMxYs0KB1T7e07Xmp/l01H7+iurIEyaE0GGk3936d+1QudG9IjEAY2zka9X8ZNhSw0klxFdAsxF6l23TH+RC1Mwd6GjGznSjnQDllT+dSaufpTB/vXdnXUfv2EzaeI0D5XNiWIQ6klZ1mdOyUi5lfWFBTd7TZo32JmwqniDmxsY0w69OAa5mKxMncZWiJtLE8r20LlaCw98pTy4UVtwDPkTYmnv2uyIh9342wNrxPLKfhVa83Q5HaupR9wrWpBo1XMmumm08mBVMNXymeNoHl8hNHpKp/TfMVAsKS56erbEsIUOFDDBobc2QwMlL5aKBpzbyRoReHnA1wdMvVIkIHzX7PqK6vB592e+zVplDcIzUURfIKB6FqSkgOhJZgxj2R2vjamG/OIwO7ckf+3Fizj8ICDrRbDK1yMbLTTlR8U6O89ic2GdnzH40Y++s5vy5jxgVfI+91MSEbxJCBfId9qyOtCJ9lnKZVVg2OWoSItmkqusSkbSFL97qw2Qo/2ec+Ga5ElzdoSwyefftFU="
-  - secure: "E8LohpRZNe+6mli6pWcziY3cmf8iQxCmAbNKvg9jdkSMtcLuX3EHB+YPF3sESBQkPv5f4s8gn5C9DwH8OPRM2lcMkSKlsfUQC3ZUVlck2v0P0dz233GdY1M5j6jJdnNbyF2DrzCsbSc4bh6mhGNUrmxWRRWS9Ihuya9IW8nvlJ398aOjGpFdKEDS0uHjjoZ/f0fTgovgHKizF799nOhN1alZjPu/gJyapwdDti2H/8JOPpHZ9lK7FrT7usS3gegdRbQgX4thy4ybRrkhqKFCT4lUUXLzUhbUrlj6cIoXYfM15Dw5wFADFLVOntISc1B33YxVXEMkqtfypH3KtJSwj1IfH2SC4eXNyOb7SEa5Uq3CunAXkNAXomz78aHEdYSfu5S3LCT3u+AYmd//PyDfig3Su31+k0RxoEat994sCUUqKVQFN1Cqw4OJF+EGp3WVrks+Ydey66uxMBJDKMuZIBUL0nmwwZKGpC36wGDMWm6X+FyxrnwcSuXTEPkpG2cBHdiCldb17rWhucBjwzzaCYXFXUORqqj7IrCcSABLEq10tNiUbJVURjftaTSU4zlTQtK9xeQJFzK7ZWIgA+T1MqOux2e39/7a9CP/boSweDbze+Weoji4N2aHkmZjNdBAD/Guk7BGRIJtH1Q7jzc+v8dUHOizeenqjewjHk8pv8s="
-  - secure: "kT1VskQUsDfFZwlCE5/RJGrhlIacjD3JA6lZRxjPgVhLz5Zzk/5NBD7HSokA14otNnfTBkCdsT0t8/dd5fSKpPazrq22mQDe85+ahfUChdD0SkHPKM/RCOk0DH/mIs7ms1LXWX14Qz68dPp2R3X6DjmxK8WN27bDvgA7MNkIg2cfSIF6u52dHUKlQNXtvAnod68pZ4FlAshoblGdqQ4p44sa+wwB0o0TToqULq6RyiZIED31DvLED12puhkK2W5CqoLY1oZSJuFSR8KFdW9lxQX4Ww88caIjjVs/CCmLkvvzlgs9Wc0qxvhpNgRWpegbk1KnsJFPlloKQZEFUsoWYBbJbR/bO75niotAufatn9gyDs0mW37Ub6tOMyKc2YLV/0GqOPNiTRv8amFRfkHiYJ5ahFccSNoRZXR4bq3s28yn5Ndk2v1wi6D74lHJJ22iQ/2FIoDvcLjUIPRdcGUsl/rG5ZFyzu6FNxaAckdsoXP6JUIvl37tay61yro2N9XqMxmO3Paezb0FCP7D7NkejQC3nHOXeIOQiZGJRgyndELggZM0kvP23QhGwO0Fkrv/gBr2jxOhRrCLm2E/4dnPR/wzf6VZiJqpo6DsKgDyRXbHywKARnlB/67ICRanLWR+oijn6oh+LIevPDC/QbsuH45fEBUTrTg5x/RnptU+rE8="
+  - secure: UJ5eT0vAspV/RsDjnT2q99NRQn/jIHPFy/QKBHAAvAXmFLXz38WUaR9I5tunxdu/6oe16p69MUCsalqdhObT6BTyCOugLTSHSypbW0RS5DnlDCcXuIpRc5RD+sMm+aLzBfT/0YCPJH3e8htpN6Ni1IXSaJDxq6Q9HWWLUbeJL5+mW83llPMoy4mXEdMexbAui6EUT89UZjre/sLqOHdJchobPQ+nXS5RZN/TYeoAqcmDom0b0f6iSkzTAZqVcqRLJL5SJq0yEXY/lpfDlpwg6aoANGcw0VyB9T86mLLf8KzAQgXxdNkzKMcEwcOKnmicm6sLNIsYLHhJqBZr93r2YOuaplo0TEU4mCCkhdLUrk+w+EjqGBoFP71RsXihd1kY1nj1A8ML03Cqo9bpgT2pEKLwwu66ZS/scPURfMZzYwxHYHRTeo7oZirV6CY1EJUd2nnK+wZOekylXYw3W1OwMC03Z4dH7x68Bois50nA19zWZvGmVbcdsLPOiVPGGy4icG3fO7oA30kWdMb/3CGNiQ85IjRwC+TZX3u/+ezEwDnpU2e7ELnBJIgDS4gBSXiKy8tVJ4Hr/fxrnzy1wMJzfMNTxxIvT97EjoIB8+OUrPCZR9JuZ0qtdWmUGmg+d1Fik4Y5gFkcEJVXaQSqYQBDh4BGgnnc1dhALkW78tOc988=
+  - secure: ePrgbDzUP+ni6IUSD2IgwmeL488KTvxP/l4VwTnil68g1OPGpVM7q8wx76tiq7mIqKeuC7JaX/Ke5iOKHXK5xHSAFxaBVNkeAG1sxmdPdo2UbfSf+j9EqOV14ySpk+7mLeSiWfF7HdtXKb9TMdJWYnSW/hDnZPxptyZvJGyk72rpWIaPPZpfWMgt4I6vFc5FqbbR6IP/auBDJyD0lNjd+iR+VGtHLw1EyEXJCloFysk9DW3cnwd2q2rEUTURXH5DMuS0tN5e21FHLTZoB9Hn8WoQElmBYIqs8aPBO16lewrQsfCjKsfHrQBSRmgKxCIoLdufpOeY0yTtM6oM4sq0VNwhBbBcZIEJWnhDcv75F5me6trN/cpQ6Nav6UMX8jPrek4mvcPLnQ0an8wn/YQsyKqRCxKgYyBgJtqgBIbCjtYwKuJo36GuOJF+nrPYO3cNwkFsdehKYhsyoyhtlBSs3cJmOulIBLOh5365UAyJVCCKcZUnWQubpTXBL83OTp2BeUQ8oUMPpVgerIA/3TgQ1zHEV/33Hr1e3dF9iuGMpe5ReLyzGLWCasqqPvasmbHaC8HZp8eZmAJoxWQGq6Ixci4MkILgHbLCJfO8h9AvkZFLxbcbseVJFm5VXYoT4d4Ub4dsBxMtE86GJXsDA9uWWTO2Aq9Ll8YfUfO4d6SblLo=
+  - secure: nf1cJWYOlLPSya3INlrQL1EA03T+nUgLzeRoQ0jKxIvu6nWQcMCxv8xyzeAdP+6y4x77ZhQkWIZBqoQYXuW+8rwJUogPB/AhRyZjCtUrzfDRrkeFQlFZlYly49lYxOpLmEfsY6/E+NnMDEnudkgKuxr2P7+d7L5FIevooeWBWoneTCB8k0ioNYVzasdWFs/R1qIvDaXmslWcLVviFkpI97MyH5FSGbT5fYKu7W3hUr1v6uHe2i9CPc45aQED7YijTkP0iDcKsDiamKAPJmhqTzJBcH+P1cJyrKB4VbMsNwCRyDtGBVLNwfUZ51lcDeC+XFJ4WU7OKQCkueUNmcLo/tm6iAmRbzrc7wXpDYDgDUxJzKhwxkqSMOwTruuho3eKyvIJ6rG2lNAxomXnF2riRcP3vUz1q8iurCLX58vcMvauUaMbF4h+C9NkhOf4KyoKNtMyJTd6WIeBPNCYkMinazl6YYjUWo6wY/u/JMzMEL/bQ8S/7pLttp0clyQ7gLMV8r/C4STfPvEAXijUjPd/h9Q+mO00DAqUk/bA6EUM1EBjxMANyTf3LLH+4h4T8quLynqvtktjnefkoWmEnHrv/2rrqv45O3MeSg4aInkOAJ/qvjAl9IcaomctBRayA/BU44OBbZg5PzN0rFwZTsphT1YWciTwSV4v6j+dxiRFz8w=
