@@ -6,3 +6,5 @@
 
 The json component provides a jackson wrapper the can be use without conflict of any other JSON libraries in Wookiee
 when running as a micro-service configuration. This library is compatible with YARN and other containerization technologies.
+
+Modeled after a version of the play-json wrapper, and updated tweaks to initialization and dependencies.
