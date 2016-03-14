@@ -15,6 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.webtrends.libs.json
 
 import Json._
@@ -252,6 +253,23 @@ trait DefaultWrites {
    */
   implicit object UuidWrites extends Writes[java.util.UUID] {
     def writes(u: java.util.UUID) = JsString(u.toString())
+  }
+
+  /**
+    * Serializer for Any, used for the args of ValidationErrors.
+    */
+  private[json] object anyWrites extends Writes[Any] {
+    def writes(a: Any): JsValue = a match {
+      case s: String => JsString(s)
+      case nb: Int => JsNumber(nb)
+      case nb: Short => JsNumber(nb)
+      case nb: Long => JsNumber(nb)
+      case nb: Double => JsNumber(nb)
+      case nb: Float => JsNumber(nb)
+      case b: Boolean => JsBoolean(b)
+      case js: JsValue => js
+      case x => JsString(x.toString)
+    }
   }
 
 }

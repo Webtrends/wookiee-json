@@ -15,6 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.webtrends.libs.json
 
 import com.webtrends.libs.ValidationError
@@ -43,20 +44,24 @@ trait Reads[A] {
     Reads[B] { json => self.reads(json).map(f) }
 
   def flatMap[B](f: A => Reads[B]): Reads[B] = Reads[B] { json =>
-    self.reads(json).flatMap(t => f(t).reads(json))
+    // Do not flatMap result to avoid repath
+    self.reads(json) match {
+      case JsSuccess(a, _) => f(a).reads(json)
+      case error: JsError => error
+    }
   }
 
   def filter(f: A => Boolean): Reads[A] =
     Reads[A] { json => self.reads(json).filter(f) }
 
   def filter(error: ValidationError)(f: A => Boolean): Reads[A] =
-    Reads[A] { json => self.reads(json).filter(error)(f) }
+    Reads[A] { json => self.reads(json).filter(JsError(error))(f) }
 
   def filterNot(f: A => Boolean): Reads[A] =
     Reads[A] { json => self.reads(json).filterNot(f) }
 
   def filterNot(error: ValidationError)(f: A => Boolean): Reads[A] =
-    Reads[A] { json => self.reads(json).filterNot(error)(f) }
+    Reads[A] { json => self.reads(json).filterNot(JsError(error))(f) }
 
   def collect[B](error: ValidationError)(f: PartialFunction[A, B]) =
     Reads[B] { json => self.reads(json).collect(error)(f) }
@@ -72,8 +77,8 @@ trait Reads[A] {
       }
     }
 
-  def andThen[B](rb: Reads[B])(implicit witness: A <:< JsValue): Reads[B] = rb.compose(this.map(witness))
-
+  def andThen[B](rb: Reads[B])(implicit witness: A <:< JsValue): Reads[B] =
+    rb.compose(this.map(witness))
 }
 
 /**

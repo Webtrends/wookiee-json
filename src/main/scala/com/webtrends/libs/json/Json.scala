@@ -15,9 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.webtrends.libs.json
 
 import com.webtrends.harness.libs.iteratee.Execution.Implicits.defaultExecutionContext
+import com.webtrends.libs.json.jackson.JacksonJson
 
 /**
  * Helper functions to handle JsValues.
